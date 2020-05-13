@@ -8,6 +8,7 @@
 #include <vector>
 #include <chrono>
 #include <ratio>
+#include <mpi.h>
 
 #include "matrix_multiply.h"
 
@@ -98,6 +99,9 @@ int main( int argc, char *argv[] )
     auto start = chr::steady_clock::now();
 
     Matrix output;
+
+    printf("Running program with %i OMP threads\n",
+           omp_get_num_threads());
 
     try
     {
