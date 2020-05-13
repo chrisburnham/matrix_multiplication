@@ -6,10 +6,10 @@ CC=gcc
 CFLAGS=-c -Wall -pthread -std=c99 -D_XOPEN_SOURCE=600 -O2 -I../spica/C
 LD=gcc
 LDFLAGS=-pthread
-SOURCES=solve_system.c \
-        linear_equations.c
+SOURCES=main.c \
+        matrix_multiply.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=LinEq
+EXECUTABLE=MatrixMultiply
 
 %.o:	%.c
 	$(CC) $(CFLAGS) $< -o $@
@@ -20,12 +20,12 @@ $(EXECUTABLE):	$(OBJECTS)
 # File Dependencies
 ###################
 
-solve_system.o:	solve_system.c linear_equations.h
+main.o:	main.c matrix_multiply.h
 
-linear_equations.o:	linear_equations.c linear_equations.h
+matrix_multiply.o:	matrix_multiply.c matrix_multiply.h
 
 
 # Additional Rules
 ##################
 clean:
-	rm -f *.o *.bc *.s *.ll *~ $(EXECUTABLE) CreateSystem
+	rm -f *.o *.bc *.s *.ll *~ $(EXECUTABLE) create_square_matrix
