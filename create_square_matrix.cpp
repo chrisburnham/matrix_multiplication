@@ -1,18 +1,18 @@
 /*!
  *  \file   main.cpp
- *  \brief  Main program of the linear equations creator.
+ *  \brief  Main program of the matrix multiply creator. Modified from Peter Chapins version
+ *          for linear equations
  *  \author (C) Copyright 2011 by Peter C. Chapin <pchapin@vtc.edu>
  *
- * This program creates a random system of linear equations in a format that is acceptable to
- * the LinearEquations program.
+ * This program creates a random square matrix
  *
  * Build this program using the command:
  *
- *    $ g++ -o CreateSystem -Wall CreateSystem.cpp
+ *    $ g++ -o create_square_matrix -Wall create_square_matrix.cpp
  *
  * Run the program to create a system of a certain size (say 100x100) using the command:
  *
- *    $ ./CreateSystem 100 > 100x100.dat
+ *    $ ./create_square_matrix 100 > 100x100.dat
  *
  */
 
@@ -60,7 +60,7 @@ int main( int argc, char **argv )
         }
 
         // Output the driving vector value for this equation.
-        cout << setw( 18 ) << setprecision( 15 ) << fixed << generate_value( ) << "\n";
+        // cout << setw( 18 ) << setprecision( 15 ) << fixed << generate_value( ) << "\n";
     }
     return EXIT_SUCCESS;
 }
