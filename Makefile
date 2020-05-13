@@ -1,13 +1,13 @@
 #
-# Makefile for the CIS-4230 Linear Equations project.
+# Makefile for matrix multiply
 #
 
-CC=gcc
-CFLAGS=-c -Wall -pthread -std=c99 -D_XOPEN_SOURCE=600 -O2 -I../spica/C
-LD=gcc
+CXX=g++
+CXXFLAGS=-c -Wall -pthread -D_XOPEN_SOURCE=600 -O2 -I../spica/C
+LD=g++
 LDFLAGS=-pthread
 SOURCES=main.c \
-        matrix_multiply.c
+        matrix_multiply.cpp
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=MatrixMultiply
 
@@ -20,9 +20,9 @@ $(EXECUTABLE):	$(OBJECTS)
 # File Dependencies
 ###################
 
-main.o:	main.c matrix_multiply.h
+main.o:	main.cpp matrix_multiply.h
 
-matrix_multiply.o:	matrix_multiply.c matrix_multiply.h
+matrix_multiply.o:	matrix_multiply.cpp matrix_multiply.h
 
 
 # Additional Rules

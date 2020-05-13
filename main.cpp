@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <Timer.h>
+#include <vector>
 
 #include "matrix_multiply.h"
 
@@ -27,20 +28,29 @@ int main( int argc, char *argv[] )
     }
 
     // Get the size.
+    printf("Reading file\n");
     fscanf( input_file, "%d", &size );
 
+    printf("Found size %i\n", size);
+
     // Allocate the arrays.
-    floating_type *a = MATRIX_MAKE( size );
+    std::vector<std::vector<double> > matrix_a(size, 
+                                               std::vector<double>(size));
+    // TODO: Matrix B
+
+    printf("Reading matrix\n");
 
     // Get coefficients.
     for( size_t i = 0; i < size; ++i ) 
     {
       for( size_t j = 0; j < size; ++j ) 
       {
-        fscanf( input_file, "%lf", MATRIX_GET_REF( a, size, i, j ) );
+        fscanf( input_file, "%lf", matrix_a[i][j]);
       }
     }
     fclose( input_file );
+
+    printf("closing file\n");
 
     Timer stopwatch;
 
@@ -49,6 +59,8 @@ int main( int argc, char *argv[] )
     // TODO: Set up and run multiply here
     //int error = gaussian_solve_threaded(size, a, b, &pool, EType_barrier );
     Timer_stop( &stopwatch );
+
+    int error = 0;
 
     if( error ) 
     {
@@ -65,7 +77,7 @@ int main( int argc, char *argv[] )
         printf( "\nExecution time = %ld milliseconds\n", Timer_time( &stopwatch ) );
     }
 
-    // Clean up the dynamically allocated space.
-    MATRIX_DESTROY( a );
+    // TODO: Write to a file?
+
     return EXIT_SUCCESS;
 }

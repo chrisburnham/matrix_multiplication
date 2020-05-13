@@ -5,7 +5,7 @@
  *
  * This is the serial version of the algorithm.
  */
-
+/*
 #include <math.h>
 #include <string.h>
 #include <pthread.h>
@@ -189,11 +189,6 @@ int gaussian_solve_threaded( int size,
 
 ///////////////////////////////////////////////////////////////////////
 
-/**
- * @brief eliminate_row
- * @param arg
- * @return
- */
 void* eliminate_rows(void* arg)
 {
   const struct Params* param = (struct Params*)arg;
@@ -209,13 +204,6 @@ void* eliminate_rows(void* arg)
 
 ///////////////////////////////////////////////////////////////////////
 
-/**
- * @brief Do gausian elimination using multiple threads
- * @param size of the input
- * @param a matrix of the inputs
- * @param b vector of the outputs
- * @return error code. 0 on sucsess, negative on failure
- */
 int elimination_thread(int size, 
                        floating_type *a, 
                        floating_type *b, 
@@ -439,6 +427,7 @@ int elimination_barriers(int size,
 
   return 0;
 }
+*/
 
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
