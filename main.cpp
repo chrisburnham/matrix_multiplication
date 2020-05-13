@@ -5,10 +5,14 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <Timer.h>
 #include <vector>
+#include <chrono>
+#include <ratio>
 
 #include "matrix_multiply.h"
+
+// Namespace shortcut
+namespace chr = std::chrono;
 
 int main( int argc, char *argv[] )
 {
@@ -52,13 +56,12 @@ int main( int argc, char *argv[] )
 
     printf("closing file\n");
 
-    Timer stopwatch;
+    auto start = chr::steady_clock::now();
 
-    Timer_initialize( &stopwatch );
-    Timer_start( &stopwatch );
     // TODO: Set up and run multiply here
     //int error = gaussian_solve_threaded(size, a, b, &pool, EType_barrier );
-    Timer_stop( &stopwatch );
+    
+    auto end = chr::steady_clock::now();
 
     int error = 0;
 
@@ -74,7 +77,9 @@ int main( int argc, char *argv[] )
         //    printf( " x(%4d) = %9.5f\n", i, b[i] );
         //}
 
-        printf( "\nExecution time = %ld milliseconds\n", Timer_time( &stopwatch ) );
+        chr::duration<double, std::milli> dur = end - start;
+
+        printf("\nExecution time = %ld milliseconds\n", dur.count());
     }
 
     // TODO: Write to a file?
