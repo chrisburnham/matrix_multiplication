@@ -12,6 +12,8 @@
 #include <stdexcept>
 
 // Matrix shorthand
+// Using row centric thinking. ie a matrix is a
+// vector of rows (which is a vector itself)
 typedef std::vector<std::vector<double> > Matrix;
 
 namespace Matrix_multiply
@@ -25,6 +27,15 @@ namespace Matrix_multiply
  * @throws runtime_error if the multiplication cannot be done
  */
 Matrix Multiply_matricies(const Matrix& mat_a, const Matrix& mat_b);
+
+/**
+ * @brief Multiply helper for a row in A
+ * @param row to multiply
+ * @param matrix B to use for multiplication
+ * @return resulting row
+ * @throws runtime_error if the sizes don't match
+ */
+std::vector<double> Multiply_row(const std::vector<double>& row, const Matrix& mat_b);
 }
 
 

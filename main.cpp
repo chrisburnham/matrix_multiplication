@@ -16,7 +16,8 @@ namespace chr = std::chrono;
 
 int main( int argc, char *argv[] )
 {
-    FILE *file_a, file_b;
+    FILE* file_a;
+    FILE* file_b;
     int   size_a, size_b;
 
     if( argc != 3 )
@@ -48,12 +49,15 @@ int main( int argc, char *argv[] )
     {
       for( size_t j = 0; j < size_a; ++j )
       {
-        fscanf( file_a, "%lf", matrix_a[i][j]);
+        double tmp;
+        fscanf( file_a, "%lf", &tmp);
+        matrix_a[i][j] = tmp;
       }
     }
+    printf("closing file A\n");
     fclose( file_a );
 
-    if( (file_b = fopen( argv[1], "r" )) == NULL )
+    if( (file_b = fopen( argv[2], "r" )) == NULL )
     {
         printf("Error: Can not open the system definition file.\n");
         return EXIT_FAILURE;
@@ -82,7 +86,9 @@ int main( int argc, char *argv[] )
     {
       for( size_t j = 0; j < size_b; ++j )
       {
-        fscanf( file_b, "%lf", matrix_b[i][j]);
+        double tmp;
+        fscanf( file_b, "%lf", &tmp);
+        matrix_b[i][j] = tmp;
       }
     }
     fclose( file_b );
@@ -108,9 +114,17 @@ int main( int argc, char *argv[] )
     if(output.size() != 0) // We calculated something
     {
       chr::duration<double, std::milli> dur = end - start;
-      printf("\nExecution time = %ld milliseconds\n", dur.count());
+      //std::cout << dur.count();
+      printf("\nExecution time = %f milliseconds\n", dur.count());
 
-      // TODO: print out solution
+      for(size_t i = 0; i < size_a; i++)
+      {
+        for(size_t j = 0; j< size_a; j++)
+        {
+          printf("%f ", output.at(i).at(j));
+        }
+        printf("\n");
+      }
     }
 
     // TODO: Write to a file?
