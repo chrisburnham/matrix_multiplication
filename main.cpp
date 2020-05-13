@@ -16,16 +16,16 @@ namespace chr = std::chrono;
 
 int main( int argc, char *argv[] )
 {
-    FILE *input_file; // TODO: Second file here
-    int   size;
+    FILE *file_a, file_b;
+    int   size_a, size_b;
 
-    if( argc != 2 ) // TODO: Need to use 3 here
+    if( argc != 3 )
     {
         printf( "Error: Expected the names of two matricies to multiply.\n" );
         return EXIT_FAILURE;
     }
 
-    if( (input_file = fopen( argv[1], "r" )) == NULL ) 
+    if( (file_a = fopen( argv[1], "r" )) == NULL )
     {
         printf("Error: Can not open the system definition file.\n");
         return EXIT_FAILURE;
@@ -33,53 +33,84 @@ int main( int argc, char *argv[] )
 
     // Get the size.
     printf("Reading file\n");
-    fscanf( input_file, "%d", &size );
+    fscanf( file_a, "%d", &size_a );
 
-    printf("Found size %i\n", size);
+    printf("Found size %i\n", size_a);
 
     // Allocate the arrays.
-    std::vector<std::vector<double> > matrix_a(size, 
-                                               std::vector<double>(size));
-    // TODO: Matrix B
+    Matrix matrix_a(size_a,
+           std::vector<double>(size_a));
 
     printf("Reading matrix\n");
 
     // Get coefficients.
-    for( size_t i = 0; i < size; ++i ) 
+    for( size_t i = 0; i < size_a; ++i )
     {
-      for( size_t j = 0; j < size; ++j ) 
+      for( size_t j = 0; j < size_a; ++j )
       {
-        fscanf( input_file, "%lf", matrix_a[i][j]);
+        fscanf( file_a, "%lf", matrix_a[i][j]);
       }
     }
-    fclose( input_file );
+    fclose( file_a );
+
+    if( (file_b = fopen( argv[1], "r" )) == NULL )
+    {
+        printf("Error: Can not open the system definition file.\n");
+        return EXIT_FAILURE;
+    }
+
+    // Get the size.
+    printf("Reading file\n");
+    fscanf( file_b, "%d", &size_b );
+
+    printf("Found size %i\n", size_b);
+
+    if(size_a != size_b)
+    {
+      printf("Matrix sizes do not match\n");
+      return EXIT_FAILURE;
+    }
+
+    // Allocate the arrays.
+    Matrix matrix_b(size_b,
+           std::vector<double>(size_b));
+
+    printf("Reading matrix\n");
+
+    // Get coefficients.
+    for( size_t i = 0; i < size_b; ++i )
+    {
+      for( size_t j = 0; j < size_b; ++j )
+      {
+        fscanf( file_b, "%lf", matrix_b[i][j]);
+      }
+    }
+    fclose( file_b );
 
     printf("closing file\n");
 
     auto start = chr::steady_clock::now();
 
-    // TODO: Set up and run multiply here
-    //int error = gaussian_solve_threaded(size, a, b, &pool, EType_barrier );
+    Matrix output;
+
+    try
+    {
+      output = Matrix_multiply::Multiply_matricies(matrix_a, matrix_b);
+    }
+    catch(const std::exception& e)
+    {
+      printf("Error while running Matrix Multiply: %s\n",
+             e.what());
+    }
     
     auto end = chr::steady_clock::now();
 
-    int error = 0;
-
-    if( error ) 
+    if(output.size() != 0) // We calculated something
     {
-      // TODO: Error checking
-      //printf( "System is degenerate\n" );
-    }
-    else {
-    	// TODO: Print solution matrix
-        //printf( "\nSolution is\n" );
-        //for( int i = 0; i < size; ++i ) {
-        //    printf( " x(%4d) = %9.5f\n", i, b[i] );
-        //}
+      chr::duration<double, std::milli> dur = end - start;
+      printf("\nExecution time = %ld milliseconds\n", dur.count());
 
-        chr::duration<double, std::milli> dur = end - start;
-
-        printf("\nExecution time = %ld milliseconds\n", dur.count());
+      // TODO: print out solution
     }
 
     // TODO: Write to a file?
