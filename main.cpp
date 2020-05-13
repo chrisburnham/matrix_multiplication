@@ -9,6 +9,7 @@
 #include <chrono>
 #include <ratio>
 #include <mpi.h>
+#include <omp.h>
 
 #include "matrix_multiply.h"
 
