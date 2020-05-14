@@ -63,9 +63,9 @@ int main( int argc, char *argv[] )
 
     if ( ierr != 0 )
     {
-      cout << "\n";
-      cout << "HELLO_MPI - Fatal error!\n";
-      cout << "  MPI_Init returned nonzero ierr.\n";
+      std::cout << "\n";
+      std::cout << "HELLO_MPI - Fatal error!\n";
+      std::cout << "  MPI_Init returned nonzero ierr.\n";
       exit ( 1 );
     }
   //
@@ -80,13 +80,13 @@ int main( int argc, char *argv[] )
     if ( id == 0 )
     {
       timestamp ( );
-      cout << "\n";
-      cout << "P" << id << ":  HELLO_MPI - Master process:\n";
-      cout << "P" << id << ":    C++/MPI version\n";
-      cout << "P" << id << ":    An MPI example program.\n";
-      cout << "\n";
-      cout << "P" << id << ":    The number of processes is " << p << "\n";
-      cout << "\n";
+      std::cout << "\n";
+      std::cout << "P" << id << ":  HELLO_MPI - Master process:\n";
+      std::cout << "P" << id << ":    C++/MPI version\n";
+      std::cout << "P" << id << ":    An MPI example program.\n";
+      std::cout << "\n";
+      std::cout << "P" << id << ":    The number of processes is " << p << "\n";
+      std::cout << "\n";
     }
   //
   //  Every process prints a hello.
@@ -95,14 +95,14 @@ int main( int argc, char *argv[] )
     {
       wtime = MPI_Wtime ( );
     }
-    cout << "P" << id << ":    'Hello, world!'\n";
+    std::cout << "P" << id << ":    'Hello, world!'\n";
   //
   //  Process 0 says goodbye.
   //
     if ( id == 0 )
     {
       wtime = MPI_Wtime ( ) - wtime;
-      cout << "P" << id << ":    Elapsed wall clock time = " << wtime << " seconds.\n";
+      std::cout << "P" << id << ":    Elapsed wall clock time = " << wtime << " seconds.\n";
     }
   //
   //  Terminate MPI.
@@ -113,10 +113,10 @@ int main( int argc, char *argv[] )
   //
     if ( id == 0 )
     {
-      cout << "\n";
-      cout << "P" << id << ":  HELLO_MPI:\n";
-      cout << "P" << id << ":    Normal end of execution.\n";
-      cout << "\n";
+      std::cout << "\n";
+      std::cout << "P" << id << ":  HELLO_MPI:\n";
+      std::cout << "P" << id << ":    Normal end of execution.\n";
+      std::cout << "\n";
       timestamp ( );
     }
 
