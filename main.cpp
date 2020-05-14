@@ -122,8 +122,8 @@ int main( int argc, char *argv[] )
       //std::cout << dur.count();
       printf("\nExecution time = %f milliseconds\n", dur.count());
 
+      // Hacky quick check to see if matricies are about the same
       double sum = 0;
-
       for(size_t i = 0; i < size_a; i++)
       {
         for(size_t j = 0; j< size_a; j++)
@@ -131,7 +131,6 @@ int main( int argc, char *argv[] )
           sum += output.at(i).at(j);
         }
       }
-
       printf("Matrix Sum: %f\n", sum);
     }
 
