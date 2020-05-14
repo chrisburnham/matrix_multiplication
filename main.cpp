@@ -8,6 +8,10 @@
 #include <vector>
 #include <chrono>
 #include <ratio>
+# include <cstdlib>
+# include <ctime>
+# include <iomanip>
+# include <iostream>
 #include <mpi.h>
 #include <omp.h>
 
