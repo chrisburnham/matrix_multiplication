@@ -122,14 +122,17 @@ int main( int argc, char *argv[] )
       //std::cout << dur.count();
       printf("\nExecution time = %f milliseconds\n", dur.count());
 
+      double sum = 0;
+
       for(size_t i = 0; i < size_a; i++)
       {
         for(size_t j = 0; j< size_a; j++)
         {
-          printf("%f ", output.at(i).at(j));
+          sum += output.at(i).at(j);
         }
-        printf("\n");
       }
+
+      printf("Matrix Sum: %f\n", sum);
     }
 
     // TODO: Write to a file?
