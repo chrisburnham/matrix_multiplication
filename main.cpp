@@ -39,6 +39,56 @@ void timestamp()
 # undef TIME_SIZE
 }
 
+Matrix read_file(const char* filename)
+{
+  File* file;
+  int size;
+
+  if( (file = fopen( argv[1], "r" )) == NULL )
+  {
+      printf("Error: Can not open the system definition file.\n");
+      return EXIT_FAILURE;
+  }
+
+  // Get the size.
+  printf("Reading file\n");
+  fscanf( file, "%d", &size );
+
+  printf("Found size %i\n", size);
+
+  // Allocate the arrays.
+  Matrix matrix(size,
+         std::vector<double>(size));
+
+  printf("Reading matrix\n");
+
+  // Get coefficients.
+  for( size_t i = 0; i < size; ++i )
+  {
+    for( size_t j = 0; j < size; ++j )
+    {
+      double tmp;
+      fscanf( file, "%lf", &tmp);
+      matrix[i][j] = tmp;
+    }
+  }
+  printf("closing file\n");
+  fclose( file );
+
+  return matrix;
+}
+
+void process_section(const Matrix rows, const Matrix matrix_b)
+{
+  Matrix output;
+  for(size_t i = 0; i < rows.size(); i++)
+  {
+    output.push_back(Matrix_multiply::Multiply_row(rows.at(i), matrix_b));
+  }
+
+  // Send results
+}
+
 
 int main( int argc, char *argv[] )
 {
@@ -77,17 +127,8 @@ int main( int argc, char *argv[] )
   //
     ierr = MPI_Comm_rank ( MPI_COMM_WORLD, &id );
 
-    if ( id == 0 )
-    {
-      timestamp ( );
-      std::cout << "\n";
-      std::cout << "P" << id << ":  HELLO_MPI - Master process:\n";
-      std::cout << "P" << id << ":    C++/MPI version\n";
-      std::cout << "P" << id << ":    An MPI example program.\n";
-      std::cout << "\n";
-      std::cout << "P" << id << ":    The number of processes is " << p << "\n";
-      std::cout << "\n";
-    }
+    Matrix mat_a = read_file(argv[1]);
+    Matrix mat_b = read_file(argv[2]);
   //
   //  Every process prints a hello.
   //
@@ -120,76 +161,8 @@ int main( int argc, char *argv[] )
       timestamp ( );
     }
 
-    if( (file_a = fopen( argv[1], "r" )) == NULL )
-    {
-        printf("Error: Can not open the system definition file.\n");
-        return EXIT_FAILURE;
-    }
 
-    // Get the size.
-    printf("Reading file\n");
-    fscanf( file_a, "%d", &size_a );
 
-    printf("Found size %i\n", size_a);
-
-    // Allocate the arrays.
-    Matrix matrix_a(size_a,
-           std::vector<double>(size_a));
-
-    printf("Reading matrix\n");
-
-    // Get coefficients.
-    for( size_t i = 0; i < size_a; ++i )
-    {
-      for( size_t j = 0; j < size_a; ++j )
-      {
-        double tmp;
-        fscanf( file_a, "%lf", &tmp);
-        matrix_a[i][j] = tmp;
-      }
-    }
-    printf("closing file A\n");
-    fclose( file_a );
-
-    if( (file_b = fopen( argv[2], "r" )) == NULL )
-    {
-        printf("Error: Can not open the system definition file.\n");
-        return EXIT_FAILURE;
-    }
-
-    // Get the size.
-    printf("Reading file\n");
-    fscanf( file_b, "%d", &size_b );
-
-    printf("Found size %i\n", size_b);
-
-    if(size_a != size_b)
-    {
-      printf("Matrix sizes do not match\n");
-      return EXIT_FAILURE;
-    }
-
-    // Allocate the arrays.
-    Matrix matrix_b(size_b,
-           std::vector<double>(size_b));
-
-    printf("Reading matrix\n");
-
-    // Get coefficients.
-    for( size_t i = 0; i < size_b; ++i )
-    {
-      for( size_t j = 0; j < size_b; ++j )
-      {
-        double tmp;
-        fscanf( file_b, "%lf", &tmp);
-        matrix_b[i][j] = tmp;
-      }
-    }
-    fclose( file_b );
-
-    printf("closing file\n");
-
-    auto start = chr::steady_clock::now();
 
     Matrix output;
 
@@ -198,7 +171,7 @@ int main( int argc, char *argv[] )
 
     try
     {
-      output = Matrix_multiply::Multiply_matricies(matrix_a, matrix_b);
+      output = Matrix_multiply::Multiply_matricies(mat_a, mat_b);
     }
     catch(const std::exception& e)
     {
