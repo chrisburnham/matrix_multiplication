@@ -139,11 +139,11 @@ int main( int argc, char *argv[] )
     {
       try
       {
-        printf("ID %i multiplying row %i\n", id, i);
+        //printf("ID %i multiplying row %i\n", id, i);
         const std::vector<double> out_row = Matrix_multiply::Multiply_row(mat_a.at(i), mat_b);
         std::copy(out_row.begin(), out_row.end(), this_node_data + data_loc);
         data_loc += mat_a.size();
-        printf("ID %i Done with row %i\n", id, i);
+        //printf("ID %i Done with row %i\n", id, i);
       }
       catch(std::exception& e)
       {
