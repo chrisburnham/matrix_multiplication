@@ -92,10 +92,6 @@ void process_section(const Matrix rows, const Matrix matrix_b)
 
 int main( int argc, char *argv[] )
 {
-    FILE* file_a;
-    FILE* file_b;
-    int   size_a, size_b;
-
     if( argc != 3 )
     {
         printf( "Error: Expected the names of two matricies to multiply.\n" );
@@ -129,17 +125,36 @@ int main( int argc, char *argv[] )
 
     Matrix mat_a = read_file(argv[1]);
     Matrix mat_b = read_file(argv[2]);
-  //
-  //  Every process prints a hello.
-  //
+
     if ( id == 0 )
     {
       wtime = MPI_Wtime ( );
     }
-    std::cout << "P" << id << ":    'Hello, world!'\n";
-  //
-  //  Process 0 says goodbye.
-  //
+
+    const int rows_per_process = mat_a.size() / p;
+    const int start_location = rows_per_process * id;
+    MPI_DOUBLE this_node_data[rows_per_process * mat_a.size()];
+    int data_loc = 0;
+
+    for(int i = start_location; i < start_location + rows_per_process; i++)
+    {
+      try
+      {
+        this_node_data[data_loc] = Matrix_multiply::Multiply_row(mat_a.at(i), mat_b).data();
+        data_loc += mat_a.size();
+      }
+      catch(std::exception& e)
+      {
+        printf("Error multiplying: %s\n", e.what());
+      }
+    }
+
+    MPI_DOUBLE all_data[mat_a.size() * mat_a.size()];
+
+    MPI_Gather(this_node_data, rows_per_process * mat_a.size(), MPI_DOUBLE,
+               all_data, mat_a.size() * mat_a.size(), MPI_DOUBLE,
+               0, MPI_COMM_WORLD);
+
     if ( id == 0 )
     {
       wtime = MPI_Wtime ( ) - wtime;
@@ -154,50 +169,50 @@ int main( int argc, char *argv[] )
   //
     if ( id == 0 )
     {
-      std::cout << "\n";
-      std::cout << "P" << id << ":  HELLO_MPI:\n";
-      std::cout << "P" << id << ":    Normal end of execution.\n";
-      std::cout << "\n";
-      timestamp ( );
-    }
-
-
-
-
-    Matrix output;
-
-    printf("Running program with %i OMP threads\n",
-           omp_get_num_threads());
-
-    try
-    {
-      output = Matrix_multiply::Multiply_matricies(mat_a, mat_b);
-    }
-    catch(const std::exception& e)
-    {
-      printf("Error while running Matrix Multiply: %s\n",
-             e.what());
-    }
-    
-    auto end = chr::steady_clock::now();
-
-    if(output.size() != 0) // We calculated something
-    {
-      chr::duration<double, std::milli> dur = end - start;
-      //std::cout << dur.count();
-      printf("\nExecution time = %f milliseconds\n", dur.count());
-
-      // Hacky quick check to see if matricies are about the same
       double sum = 0;
-      for(size_t i = 0; i < size_a; i++)
+      for(size_t i = 0; i < mat_a.size() * mat_a.size(); i++)
       {
-        for(size_t j = 0; j< size_a; j++)
-        {
-          sum += output.at(i).at(j);
-        }
+        sum += all_data[i];
       }
       printf("Matrix Sum: %f\n", sum);
+
+
+      Matrix output;
+
+      printf("Running program with %i OMP threads\n",
+             omp_get_num_threads());
+
+      try
+      {
+        output = Matrix_multiply::Multiply_matricies(mat_a, mat_b);
+      }
+      catch(const std::exception& e)
+      {
+        printf("Error while running Matrix Multiply: %s\n",
+               e.what());
+      }
+
+      auto end = chr::steady_clock::now();
+
+      if(output.size() != 0) // We calculated something
+      {
+        chr::duration<double, std::milli> dur = end - start;
+        //std::cout << dur.count();
+        printf("\nExecution time = %f milliseconds\n", dur.count());
+
+        // Hacky quick check to see if matricies are about the same
+        sum = 0;
+        for(size_t i = 0; i < mat_a.size(); i++)
+        {
+          for(size_t j = 0; j< mat_a.size(); j++)
+          {
+            sum += output.at(i).at(j);
+          }
+        }
+        printf("Matrix Sum: %f\n", sum);
+      }
     }
+
 
     // TODO: Write to a file?
 
