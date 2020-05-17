@@ -50,16 +50,11 @@ Matrix read_file(const char* filename)
   }
 
   // Get the size.
-  printf("Reading file\n");
   fscanf( file, "%d", &size );
-
-  printf("Found size %i\n", size);
 
   // Allocate the arrays.
   Matrix matrix(size,
          std::vector<double>(size));
-
-  printf("Reading matrix\n");
 
   // Get coefficients.
   for( size_t i = 0; i < size; ++i )
@@ -71,7 +66,7 @@ Matrix read_file(const char* filename)
       matrix[i][j] = tmp;
     }
   }
-  printf("closing file\n");
+
   fclose( file );
 
   return matrix;
@@ -122,6 +117,11 @@ int main( int argc, char *argv[] )
   //
     ierr = MPI_Comm_rank ( MPI_COMM_WORLD, &id );
 
+    if(id == 0)
+    {
+      printf("Starting up\n");
+    }
+
     Matrix mat_a = read_file(argv[1]);
     Matrix mat_b = read_file(argv[2]);
 
@@ -139,9 +139,11 @@ int main( int argc, char *argv[] )
     {
       try
       {
+        printf("ID %i multiplying row %i\n", id, i);
         const std::vector<double> out_row = Matrix_multiply::Multiply_row(mat_a.at(i), mat_b);
         std::copy(out_row.begin(), out_row.end(), this_node_data + data_loc);
         data_loc += mat_a.size();
+        printf("ID %i Done with row %i\n", id, i);
       }
       catch(std::exception& e)
       {
@@ -149,14 +151,17 @@ int main( int argc, char *argv[] )
       }
     }
 
-    double all_data[mat_a.size() * mat_a.size()];
+    printf("ID %i Preparing to gather\n", id);
 
+    double all_data[mat_a.size() * mat_a.size()];
     MPI_Gather(this_node_data, rows_per_process * mat_a.size(), MPI_DOUBLE_PRECISION,
                all_data, mat_a.size() * mat_a.size(), MPI_DOUBLE_PRECISION,
                0, MPI_COMM_WORLD);
 
     if ( id == 0 )
     {
+      printf("Gather complete\n");
+
       wtime = MPI_Wtime ( ) - wtime;
       std::cout << "P" << id << ":    Elapsed wall clock time = " << wtime << " seconds.\n";
     }
@@ -169,6 +174,8 @@ int main( int argc, char *argv[] )
   //
     if ( id == 0 )
     {
+      printf("Summing\n");
+
       double sum = 0;
       for(size_t i = 0; i < mat_a.size() * mat_a.size(); i++)
       {
