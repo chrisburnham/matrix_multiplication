@@ -155,7 +155,7 @@ int main( int argc, char *argv[] )
 
     double all_data[mat_a.size() * mat_a.size()];
     MPI_Gather(this_node_data, rows_per_process * mat_a.size(), MPI_DOUBLE_PRECISION,
-               all_data, mat_a.size() * mat_a.size(), MPI_DOUBLE_PRECISION,
+               all_data, rows_per_process * mat_a.size(), MPI_DOUBLE_PRECISION,
                0, MPI_COMM_WORLD);
 
     if ( id == 0 )
