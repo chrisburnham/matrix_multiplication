@@ -33,6 +33,7 @@ std::vector<double> Matrix_multiply::Multiply_row(const std::vector<double> &row
 
   std::vector<double> output_row(row.size());
 
+#pragma omp parallel for
   for(size_t i = 0; i < row.size(); i++)
   {
     if(mat_b.at(i).size() != row.size())

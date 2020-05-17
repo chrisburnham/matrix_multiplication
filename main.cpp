@@ -163,7 +163,7 @@ int main( int argc, char *argv[] )
       printf("Gather complete\n");
 
       wtime = MPI_Wtime ( ) - wtime;
-      std::cout << "P" << id << ":    Elapsed wall clock time = " << wtime << " seconds.\n";
+      std::cout << "P" << id << ":    Elapsed wall clock time = " << 1000 * wtime << " milliseconds.\n";
     }
   //
   //  Terminate MPI.
