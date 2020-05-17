@@ -158,10 +158,10 @@ int main( int argc, char *argv[] )
                all_data, rows_per_process * mat_a.size(), MPI_DOUBLE_PRECISION,
                0, MPI_COMM_WORLD);
 
+    printf("Gather %i complete\n", id);
+
     if ( id == 0 )
     {
-      printf("Gather complete\n");
-
       wtime = MPI_Wtime ( ) - wtime;
       std::cout << "P" << id << ":    Elapsed wall clock time = " << 1000 * wtime << " milliseconds.\n";
     }
