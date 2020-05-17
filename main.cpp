@@ -41,13 +41,12 @@ void timestamp()
 
 Matrix read_file(const char* filename)
 {
-  File* file;
+  FILE* file;
   int size;
 
-  if( (file = fopen( argv[1], "r" )) == NULL )
+  if( (file = fopen( filename, "r" )) == NULL )
   {
-      printf("Error: Can not open the system definition file.\n");
-      return EXIT_FAILURE;
+      throw std::runtime_error("Error: Can not open the system definition file.");
   }
 
   // Get the size.
