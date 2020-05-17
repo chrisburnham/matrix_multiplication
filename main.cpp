@@ -184,10 +184,9 @@ int main( int argc, char *argv[] )
       printf("Matrix Sum: %f\n", sum);
 
 
-      Matrix output;
+      // Running again without MPI for comparision (still uses OMP)
 
-      printf("Running program with %i OMP threads\n",
-             omp_get_num_threads());
+      Matrix output;
 
       auto start = chr::steady_clock::now();
 
