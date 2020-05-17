@@ -132,7 +132,7 @@ int main( int argc, char *argv[] )
 
     const int rows_per_process = mat_a.size() / p;
     const int start_location = rows_per_process * id;
-    MPI_DOUBLE_PRECISION this_node_data[rows_per_process * mat_a.size()];
+    double this_node_data[rows_per_process * mat_a.size()];
     int data_loc = 0;
 
     for(int i = start_location; i < start_location + rows_per_process; i++)
@@ -148,7 +148,7 @@ int main( int argc, char *argv[] )
       }
     }
 
-    MPI_DOUBLE_PRECISION all_data[mat_a.size() * mat_a.size()];
+    double all_data[mat_a.size() * mat_a.size()];
 
     MPI_Gather(this_node_data, rows_per_process * mat_a.size(), MPI_DOUBLE_PRECISION,
                all_data, mat_a.size() * mat_a.size(), MPI_DOUBLE_PRECISION,
